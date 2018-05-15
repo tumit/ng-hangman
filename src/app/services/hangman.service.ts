@@ -13,6 +13,7 @@ export class HangmanService {
   private _puzzle: string[];
   private _source: BehaviorSubject<any>;
   private _selectedKeys: string[];
+  private _isLoading: boolean;
 
   constructor(private wordService: WordService) {
     this._source = new BehaviorSubject<any>({
@@ -41,15 +42,18 @@ export class HangmanService {
     this._triesRemain = 6;
     this._isOver = true;
     this._selectedKeys = [];
+    this._isLoading = false;
     this.emitChanges();
   }
 
   public start() {
+    this._isLoading = true;
     this.reset();
     this._isOver = false;
     this.wordService.get().subscribe(data => {
       this._word = data.word;
       this._puzzle = Array.apply('', Array(this._word.length)).map(_ => '');
+      this._isLoading = false;
       this.emitChanges();
     });
   }
@@ -96,6 +100,10 @@ export class HangmanService {
 
   public isOver(): boolean {
     return this._isOver;
+  }
+
+  public isLoading(): boolean {
+    return this._isLoading;
   }
 
   public puzzle(): string[] {

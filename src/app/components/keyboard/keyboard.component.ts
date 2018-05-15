@@ -23,7 +23,7 @@ export class KeyboardComponent implements OnInit {
   }
 
   isSelectable(k: string): boolean {
-    return this.hangman.isSelected(k) || this.hangman.isOver();
+    return (!this.hangman.isLoading()) && (this.hangman.isSelected(k) || this.hangman.isOver());
   }
 
   select(k: string) {
