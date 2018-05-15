@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "./dist",
+    "public": "./dist/ng-hangman",
     "ignore": [
       "firebase.json",
       "**/.*",
