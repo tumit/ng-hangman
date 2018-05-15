@@ -9,7 +9,7 @@ export class FieldPipe implements PipeTransform {
     if (value !== '') {
       return value;
     }
-    return '_';
+    return ' ';
   }
 
 }

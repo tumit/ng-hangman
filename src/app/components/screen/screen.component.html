@@ -1,3 +1,7 @@
-<div>
-  <div *ngFor="let p of puzzle" class="field">{{ p | field }}</div>
+<div class="row">
+  <div class="col-12">
+    <div class="alert alert-warning field-list d-flex justify-content-center mb-3">
+      <div *ngFor="let p of puzzle" class="field">{{ p | field }}</div>
+    </div>
+  </div>
 </div>

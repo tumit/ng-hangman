@@ -39,13 +39,14 @@ export class HangmanService {
     this._word = '';
     this._puzzle = [];
     this._triesRemain = 6;
-    this._isOver = false;
+    this._isOver = true;
     this._selectedKeys = [];
     this.emitChanges();
   }
 
   public start() {
     this.reset();
+    this._isOver = false;
     this.wordService.get().subscribe(data => {
       this._word = data.word;
       this._puzzle = Array.apply('', Array(this._word.length)).map(_ => '');

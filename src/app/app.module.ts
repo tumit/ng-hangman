@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ButtonListComponent } from './components/button-list/button-list.component';
 import { FieldPipe } from './pipes/field.pipe';
 import { HangmanComponent } from './components/hangman/hangman.component';
+import { GithubComponent } from './components/github/github.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { HangmanComponent } from './components/hangman/hangman.component';
     ScreenComponent,
     ButtonListComponent,
     FieldPipe,
-    HangmanComponent
+    HangmanComponent,
+    GithubComponent
   ],
   imports: [
     BrowserModule,

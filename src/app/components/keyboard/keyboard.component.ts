@@ -7,10 +7,12 @@ import { HangmanService } from '../../services/hangman.service';
   styleUrls: ['./keyboard.component.css']
 })
 export class KeyboardComponent implements OnInit {
-  public keyList: string[];
+  public keyList1: string[];
+  public keyList2: string[];
 
   constructor(private hangman: HangmanService) {
-    this.keyList = 'abcdefghijklmnopqrstuvwxyz'.split('');
+    this.keyList1 = 'abcdefghijklm'.split('');
+    this.keyList2 = 'nopqrstuvwxyz'.split('');
   }
 
   ngOnInit() {

@@ -1,3 +1,8 @@
-<div>
-  <button *ngFor="let k of keyList" [disabled]="isSelectable(k)" (click)="select(k)">{{ k }}</button>
+<div class="button-list">
+  <button class="btn" [ngClass]="{'btn-secondary': isSelected(k), 'btn-primary': !isSelected(k)}" *ngFor="let k of keyList1"
+    [disabled]="isSelectable(k)" (click)="select(k)">{{ k }}</button>
+</div>
+<div class="button-list">
+  <button class="btn" [ngClass]="{'btn-secondary': isSelected(k), 'btn-primary': !isSelected(k)}" *ngFor="let k of keyList2"
+    [disabled]="isSelectable(k)" (click)="select(k)">{{ k }}</button>
 </div>

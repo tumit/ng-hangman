@@ -1,4 +1,4 @@
-<svg width="200" height="200">
+<svg width="150" height="200">
   <line x1="0" y1="198" x2="50" y2="198" style="stroke:rgb(0,0,0);stroke-width:4" />
   <line x1="25" y1="198" x2="25" y2="2" style="stroke:rgb(0,0,0);stroke-width:4" />
   <line x1="23" y1="2" x2="100" y2="2" style="stroke:rgb(0,0,0);stroke-width:4" />
@@ -13,9 +13,11 @@
   <line *ngIf="triesRemain === 0" x1="93" y1="55" x2="87" y2="61" style="stroke:rgb(0,0,0);stroke-width:2" />
   <line *ngIf="triesRemain === 0" x1="109" y1="55" x2="103" y2="61" style="stroke:rgb(0,0,0);stroke-width:2" />
   <line *ngIf="triesRemain === 0" x1="103" y1="55" x2="109" y2="61" style="stroke:rgb(0,0,0);stroke-width:2" /> Sorry, your browser does not support inline SVG.
-  <circle *ngIf="triesRemain > 0 && isOver()" cx="90" cy="58" r="4" style="stroke:rgb(0,0,0);stroke-width:2" />
-  <circle *ngIf="triesRemain > 0 && isOver()" cx="106" cy="58" r="4" style="stroke:rgb(0,0,0);stroke-width:2" />
-  <path *ngIf="triesRemain > 0 && isOver()" d="M90 70 C95 75 101 75 106 70" style="stroke:rgb(0,0,0);stroke-width:2;fill:none"
+  <circle *ngIf="!justLoaded && triesRemain > 0 && isOver()" cx="90" cy="58" r="4" style="stroke:rgb(0,0,0);stroke-width:2"
+  />
+  <circle *ngIf="!justLoaded && triesRemain > 0 && isOver()" cx="106" cy="58" r="4" style="stroke:rgb(0,0,0);stroke-width:2"
+  />
+  <path *ngIf="!justLoaded && triesRemain > 0 && isOver()" d="M90 70 C95 75 101 75 106 70" style="stroke:rgb(0,0,0);stroke-width:2;fill:none"
   />
   <path *ngIf="triesRemain === 0" d="M90 70 C95 65 101 65 106 70" style="stroke:rgb(0,0,0);stroke-width:2;fill:none" />
 </svg>
