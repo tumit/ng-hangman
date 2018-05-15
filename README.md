@@ -2,4 +2,8 @@
 
 # Hangman
 
-A simple hangman game written with Angular 6.
+A simple hangman game written with Angular and deployed on Firebase. All done with TravisCI.
+
+## Demo
+
+https://animal-hangman.firebaseapp.com
