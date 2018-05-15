@@ -7,6 +7,7 @@ import { ScreenComponent } from './components/screen/screen.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ButtonListComponent } from './components/button-list/button-list.component';
 import { FieldPipe } from './pipes/field.pipe';
+import { HangmanComponent } from './components/hangman/hangman.component';
 
 @NgModule({
   declarations: [
@@ -14,7 +15,8 @@ import { FieldPipe } from './pipes/field.pipe';
     KeyboardComponent,
     ScreenComponent,
     ButtonListComponent,
-    FieldPipe
+    FieldPipe,
+    HangmanComponent
   ],
   imports: [
     BrowserModule,

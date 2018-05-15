@@ -16,7 +16,9 @@ export class HangmanService {
 
   constructor(private wordService: WordService) {
     this._source = new BehaviorSubject<any>({
-      'puzzle': this._puzzle
+      'puzzle': this._puzzle,
+      'selectedKeys': this._selectedKeys,
+      'triesRemain': this._triesRemain
     });
     this.reset();
   }
@@ -24,7 +26,8 @@ export class HangmanService {
   private emitChanges() {
     this._source.next({
       'puzzle': this._puzzle,
-      'selectedKeys': this._selectedKeys
+      'selectedKeys': this._selectedKeys,
+      'triesRemain': this._triesRemain
     });
   }
 
