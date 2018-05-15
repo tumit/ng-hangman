@@ -98,6 +98,10 @@ export class HangmanService {
     return true;
   }
 
+  public getSolvedAt(i: number): string {
+    return this._word.split('')[i];
+  }
+
   public isOver(): boolean {
     return this._isOver;
   }
