@@ -27,6 +27,10 @@ export class ScreenComponent implements OnInit, OnDestroy {
     }
   }
 
+  public word(): string {
+    return this.hangman.word();
+  }
+
   public isOver(): boolean {
     return this.hangman.isOver();
   }

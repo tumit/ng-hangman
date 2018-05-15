@@ -5,3 +5,8 @@
     </div>
   </div>
 </div>
+
+<div class="text-center" *ngIf="isOver() && word() !== ''">
+  Don't know {{ word() }}?
+  <a href="https://www.google.co.th/search?q={{ word() }}&tbm=isch" target="_blank">Check out their photos</a>.
+</div>
