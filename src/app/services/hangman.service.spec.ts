@@ -68,24 +68,24 @@ describe('HangmanService', () => {
     expect(countResult).toEqual(6);
   });
 
-  it('should keep decreasing number of try if guess incorrectly even repeat the already-guessed letter', () => {
+  it('should not decrease number of try if repeated guess incorrectly', () => {
     service.start();
     service.guess('a');
     service.guess('a');
     service.guess('a');
     const countResult = service.triesRemain();
 
-    expect(countResult).toEqual(3);
+    expect(countResult).toEqual(5);
   });
 
   it('should game over if number of try is zero', () => {
     service.start();
     service.guess('a');
-    service.guess('a');
-    service.guess('a');
-    service.guess('a');
-    service.guess('a');
-    service.guess('a');
+    service.guess('b');
+    service.guess('c');
+    service.guess('d');
+    service.guess('f');
+    service.guess('g');
     const countResult = service.triesRemain();
     const gameResult = service.isOver();
 

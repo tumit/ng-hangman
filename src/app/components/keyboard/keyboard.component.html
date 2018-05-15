@@ -1,0 +1,3 @@
+<div>
+  <button *ngFor="let k of keyList" [disabled]="isSelectable(k)" (click)="select(k)">{{ k }}</button>
+</div>
