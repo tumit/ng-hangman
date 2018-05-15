@@ -5,6 +5,7 @@ import { KeyboardComponent } from './components/keyboard/keyboard.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ButtonListComponent } from './components/button-list/button-list.component';
 import { FieldPipe } from './pipes/field.pipe';
+import { HangmanComponent } from './components/hangman/hangman.component';
 
 describe('AppComponent', () => {
   beforeEach(async(() => {
@@ -14,6 +15,7 @@ describe('AppComponent', () => {
         KeyboardComponent,
         ScreenComponent,
         ButtonListComponent,
+        HangmanComponent,
         FieldPipe
       ],
       imports: [HttpClientTestingModule]
