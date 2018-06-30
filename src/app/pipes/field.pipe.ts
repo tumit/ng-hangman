@@ -1,22 +1,29 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { HangmanService } from '../services/hangman.service';
+import { HangmanService, PuzzleState } from '../services/hangman.service';
 
 @Pipe({
   name: 'field',
   pure: false
 })
 export class FieldPipe implements PipeTransform {
-  constructor(private hangman: HangmanService) {
 
+  private puzzleState: PuzzleState;
+
+  constructor(private hangman: HangmanService) {
+    hangman
+      .puzzleChanges()
+      .subscribe(puzzleState => this.puzzleState = puzzleState);
   }
 
-  transform(value: any, index: any): any {
+  transform(value: any, index: any): string {
     if (value !== '') {
       return value;
     }
-    // if (this.hangman.isOver()) {
-    //   return this.hangman.getSolvedAt(index);
-    // }
+
+    if (this.puzzleState.isOver) {
+      return this.puzzleState.word.charAt(index);
+    }
+
     return ' ';
   }
 
