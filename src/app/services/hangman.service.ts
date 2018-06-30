@@ -2,6 +2,12 @@ import { Injectable } from '@angular/core';
 import { WordService } from './word.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 
+interface PuzzleState {
+  puzzle: string[];
+  selectedKeys: string[];
+  triesRemain: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -11,12 +17,12 @@ export class HangmanService {
   private _triesRemain: number;
   private _isOver: boolean;
   private _puzzle: string[];
-  private _source: BehaviorSubject<any>;
+  private _source: BehaviorSubject<PuzzleState>;
   private _selectedKeys: string[];
   private _isLoading: boolean;
 
   constructor(private wordService: WordService) {
-    this._source = new BehaviorSubject<any>({
+    this._source = new BehaviorSubject<PuzzleState>({
       'puzzle': this._puzzle,
       'selectedKeys': this._selectedKeys,
       'triesRemain': this._triesRemain
@@ -32,7 +38,7 @@ export class HangmanService {
     });
   }
 
-  public puzzleChanges(): Observable<any> {
+  public puzzleChanges(): Observable<PuzzleState> {
     return this._source.asObservable();
   }
 
