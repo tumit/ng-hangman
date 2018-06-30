@@ -6,7 +6,6 @@ export interface PuzzleState {
   puzzle: string[];
   selectedKeys: string[];
   triesRemain: number;
-  loading: boolean;
   word: string;
   isOver: boolean;
 }
@@ -15,7 +14,6 @@ const initialState: PuzzleState = {
   puzzle: [],
   selectedKeys: [],
   triesRemain: 6,
-  loading: true,
   word: '',
   isOver: true
 };
@@ -26,14 +24,7 @@ const initialState: PuzzleState = {
 export class HangmanService {
 
   private puzzleState = initialState;
-
-  private _word: string;
-  private _triesRemain: number;
-  private _isOver: boolean;
-  private _puzzle: string[];
   private _source: BehaviorSubject<PuzzleState>;
-  private _selectedKeys: string[];
-  private _isLoading: boolean;
 
   constructor(private wordService: WordService) {
     this._source = new BehaviorSubject<PuzzleState>(this.puzzleState);
@@ -61,7 +52,6 @@ export class HangmanService {
           ...initialState,
           word: data.word,
           puzzle: Array.apply('', Array(data.word.length)).map(_ => ''),
-          loading: false,
           isOver: false,
         };
         this.emitChanges();
@@ -116,9 +106,5 @@ export class HangmanService {
     }
 
     this.emitChanges();
-  }
-
-  public getSolvedAt(i: number): string {
-    return this._word.split('')[i];
   }
 }
