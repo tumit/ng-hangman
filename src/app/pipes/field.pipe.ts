@@ -14,9 +14,9 @@ export class FieldPipe implements PipeTransform {
     if (value !== '') {
       return value;
     }
-    if (this.hangman.isOver()) {
-      return this.hangman.getSolvedAt(index);
-    }
+    // if (this.hangman.isOver()) {
+    //   return this.hangman.getSolvedAt(index);
+    // }
     return ' ';
   }
 

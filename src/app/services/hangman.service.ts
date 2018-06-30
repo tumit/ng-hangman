@@ -2,16 +2,30 @@ import { Injectable } from '@angular/core';
 import { WordService } from './word.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 
-interface PuzzleState {
+export interface PuzzleState {
   puzzle: string[];
   selectedKeys: string[];
   triesRemain: number;
+  loading: boolean;
+  word: string;
+  isOver: boolean;
 }
+
+const initialState: PuzzleState = {
+  puzzle: [],
+  selectedKeys: [],
+  triesRemain: 6,
+  loading: true,
+  word: '',
+  isOver: true
+};
 
 @Injectable({
   providedIn: 'root'
 })
 export class HangmanService {
+
+  private puzzleState = initialState;
 
   private _word: string;
   private _triesRemain: number;
@@ -22,101 +36,87 @@ export class HangmanService {
   private _isLoading: boolean;
 
   constructor(private wordService: WordService) {
-    this._source = new BehaviorSubject<PuzzleState>({
-      'puzzle': this._puzzle,
-      'selectedKeys': this._selectedKeys,
-      'triesRemain': this._triesRemain
-    });
-    this.reset();
-  }
-
-  private emitChanges() {
-    this._source.next({
-      'puzzle': this._puzzle,
-      'selectedKeys': this._selectedKeys,
-      'triesRemain': this._triesRemain
-    });
+    this._source = new BehaviorSubject<PuzzleState>(this.puzzleState);
   }
 
   public puzzleChanges(): Observable<PuzzleState> {
     return this._source.asObservable();
   }
 
+  private emitChanges() {
+    this._source.next(this.puzzleState);
+  }
+
   private reset() {
-    this._word = '';
-    this._puzzle = [];
-    this._triesRemain = 6;
-    this._isOver = true;
-    this._selectedKeys = [];
-    this._isLoading = false;
+    this.puzzleState = initialState;
     this.emitChanges();
   }
 
   public start() {
-    this._isLoading = true;
     this.reset();
-    this._isOver = false;
-    this.wordService.get().subscribe(data => {
-      this._word = data.word;
-      this._puzzle = Array.apply('', Array(this._word.length)).map(_ => '');
-      this._isLoading = false;
-      this.emitChanges();
-    });
+    this.wordService
+      .get()
+      .subscribe(data => {
+        this.puzzleState = {
+          ...initialState,
+          word: data.word,
+          puzzle: Array.apply('', Array(data.word.length)).map(_ => ''),
+          loading: false,
+          isOver: false,
+        };
+        this.emitChanges();
+      });
   }
 
-  public word() {
-    return this._word;
-  }
-
-  public triesRemain(): number {
-    return this._triesRemain;
+  public over() {
+    this.puzzleState = { ...this.puzzleState, isOver: true };
+    this.emitChanges();
   }
 
   public isSelected(k: string): boolean {
-    return this._selectedKeys.indexOf(k) >= 0;
+    return this.puzzleState.selectedKeys.indexOf(k) >= 0;
+    // return this._selectedKeys.indexOf(k) >= 0;
+  }
+
+  private isNotMatch(letter: string) {
+    return this.puzzleState.word.indexOf(letter) < 0;
   }
 
   public guess(letter: string): boolean {
+
     if (this.isSelected(letter)) {
-      return false;
+      return;
     }
-    this._selectedKeys.push(letter);
-    let pos = this._word.indexOf(letter);
-    if (pos < 0) {
-      if ((--this._triesRemain) <= 0) {
-        this._isOver = true;
-      }
+
+    const selectedKeys = [...this.puzzleState.selectedKeys];
+    selectedKeys.push(letter);
+
+    if (this.isNotMatch(letter)) {
+      const triesRemain = this.puzzleState.triesRemain - 1;
+      this.puzzleState = { ...this.puzzleState, selectedKeys, triesRemain, isOver: triesRemain <= 0 };
       this.emitChanges();
-      return false;
+      return;
     }
-    this._puzzle[pos] = letter;
 
-    pos = this._word.indexOf(letter, pos + 1);
+    let pos = this.puzzleState.word.indexOf(letter);
+    const puzzle = [...this.puzzleState.puzzle];
+    puzzle[pos] = letter;
+
+    pos = this.puzzleState.word.indexOf(letter, pos + 1);
     while (pos >= 0) {
-      this._puzzle[pos] = letter;
-      pos = this._word.indexOf(letter, pos + 1);
+      puzzle[pos] = letter;
+      pos = this.puzzleState.word.indexOf(letter, pos + 1);
+    }
+    this.puzzleState = { ...this.puzzleState, puzzle };
+
+    if (puzzle.join('') === this.puzzleState.word) {
+      this.puzzleState = { ...this.puzzleState, isOver: true };
     }
 
-    if (this._puzzle.join('') === this._word) {
-      this._isOver = true;
-    }
     this.emitChanges();
-    return true;
   }
 
   public getSolvedAt(i: number): string {
     return this._word.split('')[i];
-  }
-
-  public isOver(): boolean {
-    return this._isOver;
-  }
-
-  public isLoading(): boolean {
-    return this._isLoading;
-  }
-
-  public puzzle(): string[] {
-    return this._puzzle;
   }
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HangmanService } from '../../services/hangman.service';
+import { HangmanService, PuzzleState } from '../../services/hangman.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-keyboard',
@@ -10,20 +11,15 @@ export class KeyboardComponent implements OnInit {
   public keyList1: string[];
   public keyList2: string[];
 
+  public puzz$: Observable<PuzzleState>;
+
   constructor(private hangman: HangmanService) {
     this.keyList1 = 'abcdefghijklm'.split('');
     this.keyList2 = 'nopqrstuvwxyz'.split('');
   }
 
   ngOnInit() {
-  }
-
-  isSelected(k: string): boolean {
-    return this.hangman.isSelected(k);
-  }
-
-  isSelectable(k: string): boolean {
-    return (!this.hangman.isLoading()) && (this.hangman.isSelected(k) || this.hangman.isOver());
+    this.puzz$ = this.hangman.puzzleChanges();
   }
 
   select(k: string) {
