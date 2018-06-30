@@ -88,12 +88,14 @@ export class HangmanService {
       return;
     }
 
-    const selectedKeys = [...this.puzzleState.selectedKeys];
-    selectedKeys.push(letter);
+    this.puzzleState = {
+      ...this.puzzleState,
+      selectedKeys: [...this.puzzleState.selectedKeys, letter]
+    };
 
     if (this.isNotMatch(letter)) {
       const triesRemain = this.puzzleState.triesRemain - 1;
-      this.puzzleState = { ...this.puzzleState, selectedKeys, triesRemain, isOver: triesRemain <= 0 };
+      this.puzzleState = { ...this.puzzleState, triesRemain, isOver: triesRemain <= 0 };
       this.emitChanges();
       return;
     }
