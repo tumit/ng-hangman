@@ -3,7 +3,7 @@ import { of } from 'rxjs';
 import { HangmanService, initialState, PuzzleState } from './hangman.service';
 import { WordService } from './word.service';
 
-fdescribe('HangmanService', () => {
+describe('HangmanService', () => {
 
   const mockWordService = new WordService(undefined);
   mockWordService.get = () => of({ word: 'test' });
