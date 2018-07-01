@@ -3,18 +3,15 @@ import { of } from 'rxjs';
 import { HangmanService, initialState, PuzzleState } from './hangman.service';
 import { WordService } from './word.service';
 
-function createHangmanService(state: PuzzleState): HangmanService {
+fdescribe('HangmanService', () => {
+
   const mockWordService = new WordService(undefined);
   mockWordService.get = () => of({ word: 'test' });
-  return new HangmanService(mockWordService, state);
-}
-
-describe('HangmanService', () => {
-
   let service: HangmanService;
 
   beforeEach(() => {
-    service = createHangmanService(initialState);
+    service = new HangmanService(mockWordService);
+    service.start();
   });
 
   it('should be created', () => {
@@ -22,8 +19,6 @@ describe('HangmanService', () => {
   });
 
   it('should initial puzzle state with new word', () => {
-    // arrange
-    service.start();
     // assert
     const state$ = service.puzzleChanges();
     state$.subscribe(state => {
@@ -38,15 +33,10 @@ describe('HangmanService', () => {
   });
 
   describe('guess', () => {
+
     it('should do nothing when letter is selected', () => {
       // arrange
-      const prepareState = {
-        ...initialState,
-        word: 'test',
-        puzzle: ['t', '', '', ''],
-        selectedKeys: ['t'],
-      } as PuzzleState;
-      service = createHangmanService(prepareState);
+      service.guess('t');
 
       // act
       service.guess('t');
@@ -55,7 +45,7 @@ describe('HangmanService', () => {
       const state$ = service.puzzleChanges();
       state$.subscribe(state => {
         expect(state).toEqual({
-          puzzle: ['t', '', '', ''],
+          puzzle: ['t', '', '', 't'],
           selectedKeys: ['t'],
           triesRemain: 6,
           isOver: false,
@@ -66,13 +56,7 @@ describe('HangmanService', () => {
 
     it('should add letter to selectedKeys & decrease triedRemain when is wrong', () => {
       // arrange
-      const prepareState = {
-        ...initialState,
-        word: 'test',
-        puzzle: ['t', '', '', ''],
-        selectedKeys: ['t'],
-      } as PuzzleState;
-      service = createHangmanService(prepareState);
+      service.guess('t');
 
       // act
       service.guess('a');
@@ -81,7 +65,7 @@ describe('HangmanService', () => {
       const state$ = service.puzzleChanges();
       state$.subscribe(state => {
         expect(state).toEqual({
-          puzzle: ['t', '', '', ''],
+          puzzle: ['t', '', '', 't'],
           selectedKeys: ['t', 'a'],
           triesRemain: 5,
           isOver: false,
@@ -92,15 +76,14 @@ describe('HangmanService', () => {
 
     it('should set game over when triesRemain is zero', () => {
       // arrange
-      const prepareState = {
-        ...initialState,
-        triesRemain: 1,
-        isOver: false
-      } as PuzzleState;
-      service = createHangmanService(prepareState);
+      service.guess('a');
+      service.guess('b');
+      service.guess('c');
+      service.guess('d');
+      service.guess('f');
 
       // act
-      service.guess('a');
+      service.guess('g');
 
       // assert
       const state$ = service.puzzleChanges();
@@ -112,13 +95,7 @@ describe('HangmanService', () => {
 
     it('should add letter to selectedKeys & puzzle when is correct', () => {
       // arrange
-      const prepareState = {
-        ...initialState,
-        word: 'test',
-        puzzle: ['', 'e', '', ''],
-        selectedKeys: ['e'],
-      } as PuzzleState;
-      service = createHangmanService(prepareState);
+      service.guess('e');
 
       // act
       service.guess('t');
@@ -138,13 +115,8 @@ describe('HangmanService', () => {
 
     it('should set game over when puzzle equals word', () => {
       // arrange
-      const prepareState = {
-        ...initialState,
-        word: 'test',
-        puzzle: ['t', 'e', '', 't'],
-        selectedKeys: ['e', 't'],
-      } as PuzzleState;
-      service = createHangmanService(prepareState);
+      service.guess('t');
+      service.guess('e');
 
       // act
       service.guess('s');
@@ -154,7 +126,7 @@ describe('HangmanService', () => {
       state$.subscribe(state => {
         expect(state).toEqual({
           puzzle: ['t', 'e', 's', 't'],
-          selectedKeys: ['e', 't', 's'],
+          selectedKeys: ['t', 'e', 's'],
           triesRemain: 6,
           isOver: true,
           word: 'test'

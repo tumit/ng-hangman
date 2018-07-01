@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Optional } from '@angular/core';
 import { WordService } from './word.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 
@@ -22,10 +22,12 @@ export const initialState: PuzzleState = {
   providedIn: 'root'
 })
 export class HangmanService {
-
+  private _puzzleState: PuzzleState;
   private _source: BehaviorSubject<PuzzleState>;
 
-  constructor(private wordService: WordService, private _puzzleState = initialState) {
+  constructor(
+    private wordService: WordService) {
+    this._puzzleState = initialState;
     this._source = new BehaviorSubject<PuzzleState>(this._puzzleState);
   }
 
