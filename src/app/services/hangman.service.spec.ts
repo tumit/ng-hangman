@@ -1,134 +1,165 @@
-import { TestBed, inject } from '@angular/core/testing';
-
-import { HangmanService } from './hangman.service';
-import { WordService } from './word.service';
-import { Word } from '../models/word';
-import { Observable } from 'rxjs';
 import { of } from 'rxjs';
 
+import { HangmanService, initialState, PuzzleState } from './hangman.service';
+import { WordService } from './word.service';
+
+function createHangmanService(state: PuzzleState): HangmanService {
+  const mockWordService = new WordService(undefined);
+  mockWordService.get = () => of({ word: 'test' });
+  return new HangmanService(mockWordService, state);
+}
+
 describe('HangmanService', () => {
-  let wordSpy: WordService;
+
   let service: HangmanService;
 
   beforeEach(() => {
-    const wordObj = jasmine.createSpyObj('WordService', ['get']);
-    wordObj.get.and.returnValue(of({ word: 'test' }));
-
-    TestBed.configureTestingModule({
-      providers: [
-        HangmanService,
-        { provide: WordService, useValue: wordObj }
-      ]
-    });
-
-    wordSpy = TestBed.get(WordService);
-    service = TestBed.get(HangmanService);
+    service = createHangmanService(initialState);
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should get word when start new game', () => {
+  it('should initial puzzle state with new word', () => {
+    // arrange
     service.start();
-
-    expect(wordSpy.get).toHaveBeenCalled();
+    // assert
+    const state$ = service.puzzleChanges();
+    state$.subscribe(state => {
+      expect(state).toEqual({
+        puzzle: ['', '', '', ''],
+        selectedKeys: [],
+        triesRemain: 6,
+        isOver: false,
+        word: 'test'
+      });
+    });
   });
 
-  it('should get initialize word when start new game', () => {
-    const resultBefore = service.word();
-    service.start();
-    const resultAfter = service.word();
+  describe('guess', () => {
+    it('should do nothing when letter is selected', () => {
+      // arrange
+      const prepareState = {
+        ...initialState,
+        word: 'test',
+        puzzle: ['t', '', '', ''],
+        selectedKeys: ['t'],
+      } as PuzzleState;
+      service = createHangmanService(prepareState);
 
-    expect(resultBefore).toEqual('');
-    expect(resultAfter).toEqual('test');
-  });
+      // act
+      service.guess('t');
 
-  it('should set number of try to 6 when initialized', () => {
-    const result = service.triesRemain();
+      // assert
+      const state$ = service.puzzleChanges();
+      state$.subscribe(state => {
+        expect(state).toEqual({
+          puzzle: ['t', '', '', ''],
+          selectedKeys: ['t'],
+          triesRemain: 6,
+          isOver: false,
+          word: 'test'
+        });
+      });
+    });
 
-    expect(result).toEqual(6);
-  });
+    it('should add letter to selectedKeys & decrease triedRemain when is wrong', () => {
+      // arrange
+      const prepareState = {
+        ...initialState,
+        word: 'test',
+        puzzle: ['t', '', '', ''],
+        selectedKeys: ['t'],
+      } as PuzzleState;
+      service = createHangmanService(prepareState);
 
-  it('should return false and decrease number of try when give a wrong guess', () => {
-    service.start();
-    const guessResult = service.guess('a');
-    const countResult = service.triesRemain();
+      // act
+      service.guess('a');
 
-    expect(guessResult).toEqual(false);
-    expect(countResult).toEqual(5);
-  });
+      // assert
+      const state$ = service.puzzleChanges();
+      state$.subscribe(state => {
+        expect(state).toEqual({
+          puzzle: ['t', '', '', ''],
+          selectedKeys: ['t', 'a'],
+          triesRemain: 5,
+          isOver: false,
+          word: 'test'
+        });
+      });
+    });
 
-  it('should return true and do not decrease number of try if guess correctly', () => {
-    service.start();
-    const guessResult = service.guess('e');
-    const countResult = service.triesRemain();
+    it('should set game over when triesRemain is zero', () => {
+      // arrange
+      const prepareState = {
+        ...initialState,
+        triesRemain: 1,
+        isOver: false
+      } as PuzzleState;
+      service = createHangmanService(prepareState);
 
-    expect(guessResult).toEqual(true);
-    expect(countResult).toEqual(6);
-  });
+      // act
+      service.guess('a');
 
-  it('should not decrease number of try if repeated guess incorrectly', () => {
-    service.start();
-    service.guess('a');
-    service.guess('a');
-    service.guess('a');
-    const countResult = service.triesRemain();
+      // assert
+      const state$ = service.puzzleChanges();
+      state$.subscribe(state => {
+        console.log(state.triesRemain);
+        expect(state.isOver).toBeTruthy();
+      });
+    });
 
-    expect(countResult).toEqual(5);
-  });
+    it('should add letter to selectedKeys & puzzle when is correct', () => {
+      // arrange
+      const prepareState = {
+        ...initialState,
+        word: 'test',
+        puzzle: ['', 'e', '', ''],
+        selectedKeys: ['e'],
+      } as PuzzleState;
+      service = createHangmanService(prepareState);
 
-  it('should game over if number of try is zero', () => {
-    service.start();
-    service.guess('a');
-    service.guess('b');
-    service.guess('c');
-    service.guess('d');
-    service.guess('f');
-    service.guess('g');
-    const countResult = service.triesRemain();
-    const gameResult = service.isOver();
+      // act
+      service.guess('t');
 
-    expect(countResult).toEqual(0);
-    expect(gameResult).toEqual(true);
-  });
+      // assert
+      const state$ = service.puzzleChanges();
+      state$.subscribe(state => {
+        expect(state).toEqual({
+          puzzle: ['t', 'e', '', 't'],
+          selectedKeys: ['e', 't'],
+          triesRemain: 6,
+          isOver: false,
+          word: 'test'
+        });
+      });
+    });
 
-  it('should initialize puzzle', () => {
-    service.start();
-    const result = service.puzzle();
+    it('should set game over when puzzle equals word', () => {
+      // arrange
+      const prepareState = {
+        ...initialState,
+        word: 'test',
+        puzzle: ['t', 'e', '', 't'],
+        selectedKeys: ['e', 't'],
+      } as PuzzleState;
+      service = createHangmanService(prepareState);
 
-    expect(result).toEqual(['', '', '', '']);
-  });
+      // act
+      service.guess('s');
 
-  it('should solve correct guest element', () => {
-    service.start();
-    service.guess('t');
-
-    const result = service.puzzle();
-
-    expect(result).toEqual(['t', '', '', 't']);
-  });
-
-  it('should keep solving correct guest element', () => {
-    service.start();
-    service.guess('t');
-    service.guess('e');
-
-    const result = service.puzzle();
-
-    expect(result).toEqual(['t', 'e', '', 't']);
-  });
-
-  it('should game over if game solved', () => {
-    service.start();
-    service.guess('t');
-    service.guess('e');
-    service.guess('s');
-
-    const puzzleResult = service.puzzle();
-    const gameResult = service.isOver();
-
-    expect(puzzleResult).toEqual(['t', 'e', 's', 't']);
-    expect(gameResult).toEqual(true);
+      // assert
+      const state$ = service.puzzleChanges();
+      state$.subscribe(state => {
+        expect(state).toEqual({
+          puzzle: ['t', 'e', 's', 't'],
+          selectedKeys: ['e', 't', 's'],
+          triesRemain: 6,
+          isOver: true,
+          word: 'test'
+        });
+      });
+    });
   });
 });
