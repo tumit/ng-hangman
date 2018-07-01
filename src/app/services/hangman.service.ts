@@ -10,7 +10,7 @@ export interface PuzzleState {
   isOver: boolean;
 }
 
-const initialState: PuzzleState = {
+export const initialState: PuzzleState = {
   puzzle: [],
   selectedKeys: [],
   triesRemain: 6,
@@ -23,11 +23,10 @@ const initialState: PuzzleState = {
 })
 export class HangmanService {
 
-  private puzzleState = initialState;
   private _source: BehaviorSubject<PuzzleState>;
 
-  constructor(private wordService: WordService) {
-    this._source = new BehaviorSubject<PuzzleState>(this.puzzleState);
+  constructor(private wordService: WordService, private _puzzleState = initialState) {
+    this._source = new BehaviorSubject<PuzzleState>(this._puzzleState);
   }
 
   public puzzleChanges(): Observable<PuzzleState> {
@@ -35,11 +34,11 @@ export class HangmanService {
   }
 
   private emitChanges() {
-    this._source.next(this.puzzleState);
+    this._source.next(this._puzzleState);
   }
 
   private reset() {
-    this.puzzleState = initialState;
+    this._puzzleState = initialState;
     this.emitChanges();
   }
 
@@ -48,7 +47,7 @@ export class HangmanService {
     this.wordService
       .get()
       .subscribe(data => {
-        this.puzzleState = {
+        this._puzzleState = {
           ...initialState,
           word: data.word,
           puzzle: Array.apply('', Array(data.word.length)).map(_ => ''),
@@ -58,51 +57,45 @@ export class HangmanService {
       });
   }
 
-  public over() {
-    this.puzzleState = { ...this.puzzleState, isOver: true };
-    this.emitChanges();
+  private isSelected(k: string): boolean {
+    return this._puzzleState.selectedKeys.indexOf(k) >= 0;
   }
 
-  public isSelected(k: string): boolean {
-    return this.puzzleState.selectedKeys.indexOf(k) >= 0;
-    // return this._selectedKeys.indexOf(k) >= 0;
+  private isWrong(letter: string) {
+    return this._puzzleState.word.indexOf(letter) < 0;
   }
 
-  private isNotMatch(letter: string) {
-    return this.puzzleState.word.indexOf(letter) < 0;
-  }
-
-  public guess(letter: string): boolean {
+  public guess(letter: string) {
 
     if (this.isSelected(letter)) {
       return;
     }
 
-    this.puzzleState = {
-      ...this.puzzleState,
-      selectedKeys: [...this.puzzleState.selectedKeys, letter]
+    this._puzzleState = {
+      ...this._puzzleState,
+      selectedKeys: [...this._puzzleState.selectedKeys, letter]
     };
 
-    if (this.isNotMatch(letter)) {
-      const triesRemain = this.puzzleState.triesRemain - 1;
-      this.puzzleState = { ...this.puzzleState, triesRemain, isOver: triesRemain <= 0 };
+    if (this.isWrong(letter)) {
+      const triesRemain = this._puzzleState.triesRemain - 1;
+      this._puzzleState = { ...this._puzzleState, triesRemain, isOver: triesRemain <= 0 };
       this.emitChanges();
       return;
     }
 
-    let pos = this.puzzleState.word.indexOf(letter);
-    const puzzle = [...this.puzzleState.puzzle];
+    let pos = this._puzzleState.word.indexOf(letter);
+    const puzzle = [...this._puzzleState.puzzle];
     puzzle[pos] = letter;
 
-    pos = this.puzzleState.word.indexOf(letter, pos + 1);
+    pos = this._puzzleState.word.indexOf(letter, pos + 1);
     while (pos >= 0) {
       puzzle[pos] = letter;
-      pos = this.puzzleState.word.indexOf(letter, pos + 1);
+      pos = this._puzzleState.word.indexOf(letter, pos + 1);
     }
-    this.puzzleState = { ...this.puzzleState, puzzle };
+    this._puzzleState = { ...this._puzzleState, puzzle };
 
-    if (puzzle.join('') === this.puzzleState.word) {
-      this.puzzleState = { ...this.puzzleState, isOver: true };
+    if (puzzle.join('') === this._puzzleState.word) {
+      this._puzzleState = { ...this._puzzleState, isOver: true };
     }
 
     this.emitChanges();
