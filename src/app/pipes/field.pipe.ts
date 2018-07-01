@@ -15,7 +15,7 @@ export class FieldPipe implements PipeTransform {
       .subscribe(puzzleState => this.puzzleState = puzzleState);
   }
 
-  transform(value: any, index: any): string {
+  transform(value: string, index: number): string {
     if (value !== '') {
       return value;
     }
