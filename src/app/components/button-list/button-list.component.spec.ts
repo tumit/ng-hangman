@@ -4,7 +4,7 @@ import { ButtonListComponent } from './button-list.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { HangmanService } from '../../services/hangman.service';
 
-fdescribe('ButtonListComponent', () => {
+describe('ButtonListComponent', () => {
   let hangmanService: HangmanService;
   let component: ButtonListComponent;
   let fixture: ComponentFixture<ButtonListComponent>;

@@ -88,7 +88,6 @@ describe('HangmanService', () => {
       // assert
       const state$ = service.puzzleChanges();
       state$.subscribe(state => {
-        console.log(state.triesRemain);
         expect(state.isOver).toBeTruthy();
       });
     });
