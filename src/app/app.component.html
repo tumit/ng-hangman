@@ -7,7 +7,7 @@
       <app-screen></app-screen>
     </div>
     <div class="d-flex justify-content-center mb-3">
-      <app-keyboard></app-keyboard>
+      <app-keyboard [puzz]="puzz" (activatedGuess)="guess($event)" ></app-keyboard>
     </div>
     <div class="d-flex justify-content-center mb-3">
       <app-button-list (activatedStart)="start()" ></app-button-list>

@@ -21,4 +21,9 @@ export class AppComponent implements OnInit {
   start() {
     this.hangman.start();
   }
+
+  guess(k: string) {
+    this.hangman.guess(k);
+  }
+
 }

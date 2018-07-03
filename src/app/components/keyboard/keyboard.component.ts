@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { HangmanService, PuzzleState } from '../../services/hangman.service';
 import { Observable } from 'rxjs';
 
@@ -7,22 +7,23 @@ import { Observable } from 'rxjs';
   templateUrl: './keyboard.component.html',
   styleUrls: ['./keyboard.component.css']
 })
-export class KeyboardComponent implements OnInit {
+export class KeyboardComponent {
+
+  @Input()
+  public puzz: PuzzleState;
+
+  @Output()
+  public activatedGuess = new EventEmitter();
+
   public keyList1: string[];
   public keyList2: string[];
 
-  public puzz$: Observable<PuzzleState>;
-
-  constructor(private hangman: HangmanService) {
+  constructor() {
     this.keyList1 = 'abcdefghijklm'.split('');
     this.keyList2 = 'nopqrstuvwxyz'.split('');
   }
 
-  ngOnInit() {
-    this.puzz$ = this.hangman.puzzleChanges();
-  }
-
   select(k: string) {
-    this.hangman.guess(k);
+    this.activatedGuess.emit(k);
   }
 }

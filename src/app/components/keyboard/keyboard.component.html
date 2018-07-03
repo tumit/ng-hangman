@@ -1,18 +1,16 @@
-<ng-container *ngIf="(puzz$ | async) as puzz">
-  <div class="button-list">
-    <button
-      *ngFor="let k of keyList1"
-      class="btn"
-      [ngClass]="{'btn-secondary': puzz.selectedKeys.indexOf(k) >= 0, 'btn-primary': puzz.selectedKeys.indexOf(k) < 0}"
-      [disabled]="!puzz.word || puzz.isOver || puzz.selectedKeys.indexOf(k) >= 0"
-      (click)="select(k)">{{ k }}</button>
-  </div>
-  <div class="button-list">
-    <button
-      *ngFor="let k of keyList2"
-      class="btn"
-      [ngClass]="{'btn-secondary': puzz.selectedKeys.indexOf(k) >= 0, 'btn-primary': puzz.selectedKeys.indexOf(k) < 0}"
-      [disabled]="!puzz.word || puzz.isOver || puzz.selectedKeys.indexOf(k) >= 0"
-      (click)="select(k)">{{ k }}</button>
-  </div>
-</ng-container>
+<div class="button-list">
+  <button
+    *ngFor="let k of keyList1"
+    class="btn"
+    [ngClass]="{'btn-secondary': puzz.selectedKeys.indexOf(k) >= 0, 'btn-primary': puzz.selectedKeys.indexOf(k) < 0}"
+    [disabled]="!puzz.word || puzz.isOver || puzz.selectedKeys.indexOf(k) >= 0"
+    (click)="select(k)">{{ k }}</button>
+</div>
+<div class="button-list">
+  <button
+    *ngFor="let k of keyList2"
+    class="btn"
+    [ngClass]="{'btn-secondary': puzz.selectedKeys.indexOf(k) >= 0, 'btn-primary': puzz.selectedKeys.indexOf(k) < 0}"
+    [disabled]="!puzz.word || puzz.isOver || puzz.selectedKeys.indexOf(k) >= 0"
+    (click)="select(k)">{{ k }}</button>
+</div>
