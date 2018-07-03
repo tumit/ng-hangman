@@ -1,20 +1,14 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HangmanService, PuzzleState } from '../../services/hangman.service';
-import { Observable } from 'rxjs';
+import { Component, Input } from '@angular/core';
+
+import { PuzzleState } from '../../services/hangman.service';
 
 @Component({
   selector: 'app-screen',
   templateUrl: './screen.component.html',
   styleUrls: ['./screen.component.css']
 })
-export class ScreenComponent implements OnInit {
+export class ScreenComponent {
 
-  public puzz$: Observable<PuzzleState>;
-
-  constructor(private hangman: HangmanService) {
-  }
-
-  ngOnInit() {
-    this.puzz$ = this.hangman.puzzleChanges();
-  }
+  @Input()
+  public puzz: PuzzleState;
 }

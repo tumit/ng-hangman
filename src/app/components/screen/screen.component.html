@@ -1,16 +1,14 @@
-<ng-container *ngIf="(puzz$ | async) as puzz">
-  <div class="row">
-    <div class="col-12">
-      <div class="alert alert-warning field-list d-flex justify-content-center mb-3">
-        <div *ngFor="let p of puzz.puzzle; let idx = index"
-          class="field"
-          [ngClass]="{'text-danger': (p === '' && puzz.isOver)}">{{ p | field : idx }}</div>
-      </div>
+<div class="row">
+  <div class="col-12">
+    <div class="alert alert-warning field-list d-flex justify-content-center mb-3">
+      <div *ngFor="let p of puzz.puzzle; let idx = index"
+        class="field"
+        [ngClass]="{'text-danger': (p === '' && puzz.isOver)}">{{ p | field : idx }}</div>
     </div>
   </div>
+</div>
 
-  <div class="text-center" *ngIf="puzz.isOver && puzz.word !== ''">
-    Don't know {{ puzz.word }}?
-    <a href="https://www.google.co.th/search?q={{ puzz.word }}&tbm=isch" target="_blank">Check out their photos</a>.
-  </div>
-</ng-container>
+<div class="text-center" *ngIf="puzz.isOver && puzz.word !== ''">
+  Don't know {{ puzz.word }}?
+  <a href="https://www.google.co.th/search?q={{ puzz.word }}&tbm=isch" target="_blank">Check out their photos</a>.
+</div>

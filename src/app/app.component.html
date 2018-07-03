@@ -4,7 +4,7 @@
       <app-hangman [puzz]="puzz" ></app-hangman>
     </div>
     <div class="d-flex justify-content-center mb-3">
-      <app-screen></app-screen>
+      <app-screen [puzz]="puzz"></app-screen>
     </div>
     <div class="d-flex justify-content-center mb-3">
       <app-keyboard [puzz]="puzz" (activatedGuess)="guess($event)" ></app-keyboard>
