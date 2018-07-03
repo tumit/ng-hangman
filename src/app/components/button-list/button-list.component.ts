@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { HangmanService } from '../../services/hangman.service';
 
 @Component({
@@ -6,15 +6,13 @@ import { HangmanService } from '../../services/hangman.service';
   templateUrl: './button-list.component.html',
   styleUrls: ['./button-list.component.css']
 })
-export class ButtonListComponent implements OnInit {
+export class ButtonListComponent {
 
-  constructor(private hangman: HangmanService) { }
-
-  ngOnInit() {
-  }
+  @Output()
+  public activatedStart = new EventEmitter();
 
   public start() {
-    this.hangman.start();
+    this.activatedStart.emit();
   }
 
 }

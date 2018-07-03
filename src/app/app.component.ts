@@ -17,4 +17,8 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     this.puzz$ = this.hangman.puzzleChanges();
   }
+
+  start() {
+    this.hangman.start();
+  }
 }
