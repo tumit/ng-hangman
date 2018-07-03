@@ -1,17 +1,19 @@
-<div class="container main">
-  <div class="d-flex justify-content-center mb-3">
-    <app-hangman></app-hangman>
+<ng-container *ngIf="(puzz$ | async) as puzz">
+  <div class="container main">
+    <div class="d-flex justify-content-center mb-3">
+      <app-hangman [puzz]="puzz" ></app-hangman>
+    </div>
+    <div class="d-flex justify-content-center mb-3">
+      <app-screen></app-screen>
+    </div>
+    <div class="d-flex justify-content-center mb-3">
+      <app-keyboard></app-keyboard>
+    </div>
+    <div class="d-flex justify-content-center mb-3">
+      <app-button-list></app-button-list>
+    </div>
+    <div class="d-flex justify-content-center mb-1">
+      <app-github></app-github>
+    </div>
   </div>
-  <div class="d-flex justify-content-center mb-3">
-    <app-screen></app-screen>
-  </div>
-  <div class="d-flex justify-content-center mb-3">
-    <app-keyboard></app-keyboard>
-  </div>
-  <div class="d-flex justify-content-center mb-3">
-    <app-button-list></app-button-list>
-  </div>
-  <div class="d-flex justify-content-center mb-1">
-    <app-github></app-github>
-  </div>
-</div>
+</ng-container>
