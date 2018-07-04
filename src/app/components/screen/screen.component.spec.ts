@@ -1,9 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ScreenComponent } from './screen.component';
-import { HangmanService } from '../../services/hangman.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { FieldPipe } from '../../pipes/field.pipe';
+import { HangmanService, initialState } from '../../services/hangman.service';
+import { ScreenComponent } from './screen.component';
 
 describe('ScreenComponent', () => {
   let component: ScreenComponent;
@@ -12,15 +11,14 @@ describe('ScreenComponent', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ScreenComponent, FieldPipe],
-      providers: [HangmanService],
-      imports: [HttpClientTestingModule]
-    })
-      .compileComponents();
+      providers: [HangmanService]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ScreenComponent);
     component = fixture.componentInstance;
+    component.puzz = initialState;
     fixture.detectChanges();
   });
 

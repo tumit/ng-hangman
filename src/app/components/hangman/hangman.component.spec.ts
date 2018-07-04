@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { initialState } from '../../services/hangman.service';
 import { HangmanComponent } from './hangman.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('HangmanComponent', () => {
   let component: HangmanComponent;
@@ -9,15 +9,14 @@ describe('HangmanComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [HangmanComponent],
-      imports: [HttpClientTestingModule]
-    })
-      .compileComponents();
+      declarations: [HangmanComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HangmanComponent);
     component = fixture.componentInstance;
+    component.puzz = initialState;
     fixture.detectChanges();
   });
 

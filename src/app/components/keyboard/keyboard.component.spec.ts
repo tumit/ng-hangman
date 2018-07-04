@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
+import { initialState } from '../../services/hangman.service';
 import { KeyboardComponent } from './keyboard.component';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('KeyboardComponent', () => {
   let component: KeyboardComponent;
@@ -9,15 +9,14 @@ describe('KeyboardComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [KeyboardComponent],
-      imports: [HttpClientTestingModule]
-    })
-      .compileComponents();
+      declarations: [KeyboardComponent]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(KeyboardComponent);
     component = fixture.componentInstance;
+    component.puzz = initialState;
     fixture.detectChanges();
   });
 
