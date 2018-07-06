@@ -3,5 +3,6 @@
     "abcdefghijklm",
     "nopqrstuvwxyz",
     "puzz"
-  ]
+  ],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
