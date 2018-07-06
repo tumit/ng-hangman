@@ -1,5 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { HangmanService, PuzzleState } from '../services/hangman.service';
+import { PuzzleState } from '../services/hangman.service';
+import { Store } from '@ngrx/store';
 
 @Pipe({
   name: 'field',
@@ -9,9 +10,9 @@ export class FieldPipe implements PipeTransform {
 
   private puzzleState: PuzzleState;
 
-  constructor(private hangman: HangmanService) {
-    hangman
-      .puzzleChanges()
+  constructor(private store: Store<PuzzleState>) {
+    store
+      .select('puzz')
       .subscribe(puzzleState => this.puzzleState = puzzleState);
   }
 

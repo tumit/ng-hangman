@@ -20,6 +20,7 @@ export const initialState: PuzzleState = {
   isOver: true
 };
 
+/*
 @Injectable({
   providedIn: 'root'
 })
@@ -105,6 +106,7 @@ export class HangmanService {
     this.emitChanges();
   }
 }
+*/
 
 export const PUZZLE_START = 'PUZZLE_START';
 export const PUZZLE_GUESS = 'PUZZLE_GUESS';
@@ -118,20 +120,34 @@ function start(state: PuzzleState, word: string): PuzzleState {
   };
 }
 
+function isSelected(state: PuzzleState, letter: string) {
+  return state.selectedKeys.indexOf(letter) >= 0;
+}
+
+function isWrong(state: PuzzleState, letter: string) {
+  return state.word.indexOf(letter) < 0;
+}
+
+function isOver(state: PuzzleState) {
+  return state.puzzle.join('') === state.word;
+}
+
 function guess(state: PuzzleState, letter: string): PuzzleState {
 
-  if (state.selectedKeys.indexOf(letter) >= 0) {
+  if (isSelected(state, letter)) {
     return state;
   }
 
-  state = {
-    ...state,
-    selectedKeys: [...state.selectedKeys, letter]
-  };
+  const selectedKeys = [...state.selectedKeys, letter];
 
-  if (state.word.indexOf(letter) < 0) {
+  if (isWrong(state, letter)) {
     const triesRemain = state.triesRemain - 1;
-    return { ...state, triesRemain, isOver: triesRemain <= 0 };
+    return {
+      ...state,
+      selectedKeys,
+      triesRemain,
+      isOver: triesRemain <= 0
+    };
   }
 
   let pos = state.word.indexOf(letter);
@@ -143,13 +159,8 @@ function guess(state: PuzzleState, letter: string): PuzzleState {
     puzzle[pos] = letter;
     pos = state.word.indexOf(letter, pos + 1);
   }
-  state = { ...state, puzzle };
 
-  if (puzzle.join('') === state.word) {
-    state = { ...state, isOver: true };
-  }
-
-  return state;
+  return { ...state, puzzle, selectedKeys, isOver: isOver(state) };
 }
 
 class PuzzleStartAction implements Action {
