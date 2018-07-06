@@ -3,6 +3,7 @@ import { Action } from '@ngrx/store';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 import { WordService } from './word.service';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 
 export interface PuzzleState {
   puzzle: string[];
@@ -108,4 +109,11 @@ export class HangmanService {
 
 export function hangmanReducer(state = initialState, action: Action) {
   return state;
+}
+
+@Injectable()
+export class HangmanEffect {
+  @Effect()
+  start$: Observable<Action> = this.actions$.pipe();
+  constructor(private wordService: WordService, private actions$: Actions) {}
 }
