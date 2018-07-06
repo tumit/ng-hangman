@@ -107,6 +107,7 @@ export class HangmanService {
 }
 
 export const PUZZLE_START = 'PUZZLE_START';
+export const PUZZLE_GUESS = 'PUZZLE_GUESS';
 
 function start(state: PuzzleState, word: string): PuzzleState {
   return {
@@ -117,15 +118,56 @@ function start(state: PuzzleState, word: string): PuzzleState {
   };
 }
 
-export function hangmanReducer(state = initialState, action: PuzzleStartAction) {
-  switch (action.type) {
-    case PUZZLE_START:
-      return start(state, action.word);
-    default: return state;
+function guess(state: PuzzleState, letter: string): PuzzleState {
+
+  if (state.selectedKeys.indexOf(letter) >= 0) {
+    return state;
   }
+
+  state = {
+    ...state,
+    selectedKeys: [...state.selectedKeys, letter]
+  };
+
+  if (state.word.indexOf(letter) < 0) {
+    const triesRemain = state.triesRemain - 1;
+    return { ...state, triesRemain, isOver: triesRemain <= 0 };
+  }
+
+  let pos = state.word.indexOf(letter);
+  const puzzle = [...state.puzzle];
+  puzzle[pos] = letter;
+
+  pos = state.word.indexOf(letter, pos + 1);
+  while (pos >= 0) {
+    puzzle[pos] = letter;
+    pos = state.word.indexOf(letter, pos + 1);
+  }
+  state = { ...state, puzzle };
+
+  if (puzzle.join('') === state.word) {
+    state = { ...state, isOver: true };
+  }
+
+  return state;
 }
 
 class PuzzleStartAction implements Action {
   readonly type = PUZZLE_START;
   constructor(public word: string) { }
+}
+
+class PuzzleGuessAction implements Action {
+  readonly type = PUZZLE_GUESS;
+  constructor(public letter: string) { }
+}
+
+export function hangmanReducer(state = initialState, action: PuzzleStartAction | PuzzleGuessAction) {
+  switch (action.type) {
+    case PUZZLE_START:
+      return start(initialState, action.word);
+    case PUZZLE_GUESS:
+      return guess(state, action.letter);
+    default: return state;
+  }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { select, Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 
-import { PuzzleState, PUZZLE_START } from './services/hangman.service';
+import { PuzzleState, PUZZLE_START, PUZZLE_GUESS } from './services/hangman.service';
 import { WordService } from './services/word.service';
 
 @Component({
@@ -31,8 +31,8 @@ export class AppComponent implements OnInit {
       );
   }
 
-  guess(k: string) {
-    //
+  guess(letter: string) {
+    this.store.dispatch({ type: PUZZLE_GUESS, letter: letter });
   }
 
 }
