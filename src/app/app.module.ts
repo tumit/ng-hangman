@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { StoreModule } from '@ngrx/store';
 
 import { AppComponent } from './app.component';
 import { KeyboardComponent } from './components/keyboard/keyboard.component';
@@ -9,6 +10,7 @@ import { ButtonListComponent } from './components/button-list/button-list.compon
 import { FieldPipe } from './pipes/field.pipe';
 import { HangmanComponent } from './components/hangman/hangman.component';
 import { GithubComponent } from './components/github/github.component';
+import { hangmanReducer } from './services/hangman.service';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,8 @@ import { GithubComponent } from './components/github/github.component';
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    StoreModule.forRoot({ puzz: hangmanReducer }),
   ],
   providers: [],
   bootstrap: [AppComponent]

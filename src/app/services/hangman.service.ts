@@ -1,6 +1,8 @@
-import { Injectable, Optional } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { Action } from '@ngrx/store';
+import { BehaviorSubject, Observable } from 'rxjs';
+
 import { WordService } from './word.service';
-import { Observable, BehaviorSubject } from 'rxjs';
 
 export interface PuzzleState {
   puzzle: string[];
@@ -102,4 +104,8 @@ export class HangmanService {
 
     this.emitChanges();
   }
+}
+
+export function hangmanReducer(state = initialState, action: Action) {
+  return state;
 }
