@@ -10,6 +10,7 @@ export interface PuzzleState {
   triesRemain: number;
   word: string;
   isOver: boolean;
+  loading: boolean;
 }
 
 export const initialState: PuzzleState = {
@@ -17,97 +18,11 @@ export const initialState: PuzzleState = {
   selectedKeys: [],
   triesRemain: 6,
   word: '',
-  isOver: true
+  isOver: true,
+  loading: false
 };
 
-/*
-@Injectable({
-  providedIn: 'root'
-})
-export class HangmanService {
-  private _puzzleState: PuzzleState;
-  private _source: BehaviorSubject<PuzzleState>;
-
-  constructor(
-    private wordService: WordService) {
-    this._puzzleState = initialState;
-    this._source = new BehaviorSubject<PuzzleState>(this._puzzleState);
-  }
-
-  public puzzleChanges(): Observable<PuzzleState> {
-    return this._source.asObservable();
-  }
-
-  private emitChanges() {
-    this._source.next(this._puzzleState);
-  }
-
-  private reset() {
-    this._puzzleState = initialState;
-    this.emitChanges();
-  }
-
-  public start() {
-    this.reset();
-    this.wordService
-      .get()
-      .subscribe(data => {
-        this._puzzleState = {
-          ...initialState,
-          word: data.word,
-          puzzle: Array.apply('', Array(data.word.length)).map(_ => ''),
-          isOver: false,
-        };
-        this.emitChanges();
-      });
-  }
-
-  private isSelected(k: string): boolean {
-    return this._puzzleState.selectedKeys.indexOf(k) >= 0;
-  }
-
-  private isWrong(letter: string) {
-    return this._puzzleState.word.indexOf(letter) < 0;
-  }
-
-  public guess(letter: string) {
-
-    if (this.isSelected(letter)) {
-      return;
-    }
-
-    this._puzzleState = {
-      ...this._puzzleState,
-      selectedKeys: [...this._puzzleState.selectedKeys, letter]
-    };
-
-    if (this.isWrong(letter)) {
-      const triesRemain = this._puzzleState.triesRemain - 1;
-      this._puzzleState = { ...this._puzzleState, triesRemain, isOver: triesRemain <= 0 };
-      this.emitChanges();
-      return;
-    }
-
-    let pos = this._puzzleState.word.indexOf(letter);
-    const puzzle = [...this._puzzleState.puzzle];
-    puzzle[pos] = letter;
-
-    pos = this._puzzleState.word.indexOf(letter, pos + 1);
-    while (pos >= 0) {
-      puzzle[pos] = letter;
-      pos = this._puzzleState.word.indexOf(letter, pos + 1);
-    }
-    this._puzzleState = { ...this._puzzleState, puzzle };
-
-    if (puzzle.join('') === this._puzzleState.word) {
-      this._puzzleState = { ...this._puzzleState, isOver: true };
-    }
-
-    this.emitChanges();
-  }
-}
-*/
-
+export const PUZZLE_LOADING = 'PUZZLE_LOADING';
 export const PUZZLE_START = 'PUZZLE_START';
 export const PUZZLE_GUESS = 'PUZZLE_GUESS';
 
@@ -117,6 +32,7 @@ function start(state: PuzzleState, word: string): PuzzleState {
     word,
     puzzle: Array.apply('', Array(word.length)).map(_ => ''),
     isOver: false,
+    loading: false
   };
 }
 
@@ -128,8 +44,8 @@ function isWrong(state: PuzzleState, letter: string) {
   return state.word.indexOf(letter) < 0;
 }
 
-function isOver(state: PuzzleState) {
-  return state.puzzle.join('') === state.word;
+function isOver(state: PuzzleState, puzzle: string[]) {
+  return state.word === puzzle.join('');
 }
 
 function guess(state: PuzzleState, letter: string): PuzzleState {
@@ -160,7 +76,11 @@ function guess(state: PuzzleState, letter: string): PuzzleState {
     pos = state.word.indexOf(letter, pos + 1);
   }
 
-  return { ...state, puzzle, selectedKeys, isOver: isOver(state) };
+  return { ...state, puzzle, selectedKeys, isOver: isOver(state, puzzle) };
+}
+
+class PuzzleLoadingAction implements Action {
+  readonly type = PUZZLE_LOADING;
 }
 
 class PuzzleStartAction implements Action {
@@ -173,10 +93,12 @@ class PuzzleGuessAction implements Action {
   constructor(public letter: string) { }
 }
 
-export function hangmanReducer(state = initialState, action: PuzzleStartAction | PuzzleGuessAction) {
+export function hangmanReducer(state = initialState, action: PuzzleLoadingAction | PuzzleStartAction | PuzzleGuessAction) {
   switch (action.type) {
+    case PUZZLE_LOADING:
+      return { ...initialState, loading: true };
     case PUZZLE_START:
-      return start(initialState, action.word);
+      return start(state, action.word);
     case PUZZLE_GUESS:
       return guess(state, action.letter);
     default: return state;

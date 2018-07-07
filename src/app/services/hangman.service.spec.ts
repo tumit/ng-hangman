@@ -1,6 +1,6 @@
 import { of } from 'rxjs';
 
-import { HangmanService, initialState, PuzzleState } from './hangman.service';
+import { initialState, PuzzleState } from './hangman.service';
 import { WordService } from './word.service';
 
 describe('HangmanService', () => {

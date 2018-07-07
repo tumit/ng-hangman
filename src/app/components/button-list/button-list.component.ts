@@ -1,5 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { HangmanService } from '../../services/hangman.service';
+import { Input } from '@angular/core';
+import { PuzzleState } from '../../services/hangman.service';
 
 @Component({
   selector: 'app-button-list',
@@ -7,6 +8,9 @@ import { HangmanService } from '../../services/hangman.service';
   styleUrls: ['./button-list.component.css']
 })
 export class ButtonListComponent {
+
+  @Input()
+  public puzz: PuzzleState;
 
   @Output()
   public activatedStart = new EventEmitter();
