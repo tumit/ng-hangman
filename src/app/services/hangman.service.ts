@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
+import { Actions, Effect, ofType } from '@ngrx/effects';
 import { Action } from '@ngrx/store';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
 import { WordService } from './word.service';
 
@@ -103,4 +105,16 @@ export function hangmanReducer(state = initialState, action: PuzzleLoadingAction
       return guess(state, action.letter);
     default: return state;
   }
+}
+
+@Injectable()
+export class HangmanEffect {
+  @Effect()
+  start$: Observable<Action> = this.actions$
+    .pipe(
+      ofType<PuzzleLoadingAction>(PUZZLE_LOADING),
+      switchMap(action => this.wordService.get()),
+      map(word => ({ type: PUZZLE_START, payload: word }))
+    );
+  constructor(private wordService: WordService, private actions$: Actions) {}
 }

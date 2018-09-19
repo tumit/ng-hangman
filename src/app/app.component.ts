@@ -25,11 +25,11 @@ export class AppComponent implements OnInit {
 
   start() {
     this.store.dispatch({ type: PUZZLE_LOADING });
-    this.wordService
-      .get()
-      .subscribe(data =>
-        this.store.dispatch({ type: PUZZLE_START, word: data.word })
-      );
+    // this.wordService
+    //   .get()
+    //   .subscribe(data =>
+    //     this.store.dispatch({ type: PUZZLE_START, word: data.word })
+    //   );
   }
 
   guess(letter: string) {

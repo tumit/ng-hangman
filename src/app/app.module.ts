@@ -11,8 +11,9 @@ import { ButtonListComponent } from './components/button-list/button-list.compon
 import { FieldPipe } from './pipes/field.pipe';
 import { HangmanComponent } from './components/hangman/hangman.component';
 import { GithubComponent } from './components/github/github.component';
-import { hangmanReducer } from './services/hangman.service';
+import { hangmanReducer, HangmanEffect } from './services/hangman.service';
 import { environment } from '../environments/environment';
+import { EffectsModule } from '@ngrx/effects';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { environment } from '../environments/environment';
     StoreModule.forRoot({ puzz: hangmanReducer }),
     StoreDevtoolsModule.instrument({
       logOnly: environment.production
-    })
+    }),
+    EffectsModule.forRoot([HangmanEffect]),
   ],
   providers: [],
   bootstrap: [AppComponent]
